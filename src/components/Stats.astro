@@ -1,0 +1,45 @@
+---
+/** Proof points on ink. Lead with the number. */
+interface Props {
+  items: { number: string; label: string }[];
+}
+const { items } = Astro.props;
+---
+<ul class="stats">
+  {items.map((s) => (
+    <li class="stat">
+      <p class="stat__num">{s.number}</p>
+      <p class="label-mono">{s.label}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 48px;
+  }
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 20px;
+    border-top: 2px solid var(--color-text-inverse);
+  }
+  .stat__num {
+    font-weight: 800;
+    font-size: 72px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+  }
+  @media (max-width: 900px) { .stat__num { font-size: 56px; } .stats { gap: 32px; } }
+  @media (max-width: 760px) {
+    .stats { grid-template-columns: 1fr; gap: 32px; }
+    .stat__num { font-size: 72px; }
+  }
+</style>

@@ -1,0 +1,179 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Button from '../../components/Button.astro';
+import Stats from '../../components/Stats.astro';
+
+export async function getStaticPaths() {
+  const work = await getCollection('work', ({ data }) => !data.draft);
+  return work.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const d = entry.data;
+const next = d.next ? await getEntry('work', d.next) : undefined;
+const nextLive = next && !next.data.draft ? next : undefined;
+
+// Demand waterfall (illustrative) — bar heights from the comp, as a share of the first stage.
+const waterfall = [
+  { stage: 'Inquiries', h: 240 },
+  { stage: 'MQL', h: 148.8 },
+  { stage: 'SAL', h: 105.6 },
+  { stage: 'SQL', h: 72 },
+  { stage: 'Opportunity', h: 45.6 },
+  { stage: 'Won', h: 19.2, red: true },
+];
+---
+<Base title={`${d.title} — Na'im McKee`} description={d.lede} image={d.heroImage?.src}>
+  <header class="cs-head">
+    {d.heroImage && <img class="cs-head__bg" src={d.heroImage.src} alt="" width="2400" height="1095" fetchpriority="high" />}
+    <div class="cs-head__shade" aria-hidden="true"></div>
+    <div class="wrap cs-head__copy">
+      <p class="label-mono cs-head__crumb"><a href="/#work">Work</a>&nbsp;&nbsp;/&nbsp;&nbsp;{d.company}</p>
+      <p class="label-mono cs-head__meta">{d.company} · {d.years}</p>
+      <h1 class="display-l cs-head__title">{d.title}</h1>
+      <p class="body-l cs-head__lede">{d.lede}</p>
+    </div>
+  </header>
+
+  {d.results.length > 0 && (
+    <section class="section--ink cs-results" aria-label="Results">
+      <div class="wrap"><Stats items={d.results} /></div>
+    </section>
+  )}
+
+  {d.figure === 'waterfall' && (
+    <figure class="wrap cs-fig">
+      <figcaption class="label-mono secondary">Fig. 1 — The demand waterfall (illustrative)</figcaption>
+      <div class="wf" role="img" aria-label="Illustrative demand waterfall: inquiries narrow through MQL, SAL, SQL and opportunity to won deals.">
+        {waterfall.map((s) => (
+          <div class="wf__col">
+            <div class="wf__bar" style={`height:${(s.h / 240) * 100}%`} data-red={s.red ? '' : undefined}></div>
+            <span class="label-mono secondary wf__label">{s.stage}</span>
+          </div>
+        ))}
+      </div>
+    </figure>
+  )}
+
+  <section class="wrap cs-row" aria-labelledby="cs-problem">
+    <div class="cs-label"><p class="label-mono accent">01</p><h2 class="h2" id="cs-problem">The problem</h2></div>
+    <div class="cs-body"><p class="body-l">{d.problem}</p></div>
+  </section>
+
+  <section class="wrap cs-row" aria-labelledby="cs-did">
+    <div class="cs-label"><p class="label-mono accent">02</p><h2 class="h2" id="cs-did">What I did</h2></div>
+    <div class="cs-body">
+      <p class="body-l">{d.didIntro}</p>
+      <dl class="cs-items">
+        {d.did.map((i) => (
+          <div class="cs-item"><dt class="h3">{i.name}</dt><dd class="body secondary">{i.text}</dd></div>
+        ))}
+      </dl>
+    </div>
+  </section>
+
+  <section class="wrap cs-row" aria-labelledby="cs-result">
+    <div class="cs-label"><p class="label-mono accent">03</p><h2 class="h2" id="cs-result">The result</h2></div>
+    <div class="cs-body">
+      <p class="body-l">{d.result}</p>
+      {d.tools.length > 0 && <p class="label-mono secondary cs-tools">Tools: {d.tools.join(' · ')}</p>}
+    </div>
+  </section>
+
+  <nav class="wrap cs-next" aria-label="Next case study">
+    {nextLive ? (
+      <>
+        <p class="label-mono">Next case study</p>
+        <div class="cs-next__row">
+          <p class="h2">{nextLive.data.title}</p>
+          <Button href={`/work/${nextLive.id}/`}>{d.nextCta ?? 'Read the next case'}</Button>
+        </div>
+      </>
+    ) : (
+      <div class="cs-next__row">
+        <p class="h2">See the rest of the work</p>
+        <Button href="/#work">Back to selected work</Button>
+      </div>
+    )}
+  </nav>
+</Base>
+
+<style>
+  .cs-head {
+    position: relative;
+    min-height: 657px;
+    display: flex;
+    align-items: center;
+    background: var(--color-photo-fallback);
+    color: var(--color-text-inverse);
+    overflow: hidden;
+  }
+  .cs-head__bg { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.72; }
+  .cs-head__shade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(180deg, rgba(18, 18, 18, 0) 0%, rgba(18, 18, 18, 0) 70%, rgba(18, 18, 18, 0.7) 100%),
+      linear-gradient(90deg, rgba(18, 18, 18, 0.96) 0%, rgba(18, 18, 18, 0.82) 45%, rgba(18, 18, 18, 0.3) 75%, rgba(18, 18, 18, 0.15) 100%);
+  }
+  .cs-head__copy { position: relative; display: flex; flex-direction: column; gap: 24px; padding-top: 72px; padding-bottom: 72px; }
+  .cs-head__crumb { opacity: 0.7; }
+  .cs-head__crumb a { text-decoration: none; }
+  .cs-head__crumb a:hover { text-decoration: underline; }
+  .cs-head__meta { color: var(--color-accent-brass); }
+  .cs-head__title { max-width: 720px; }
+  .cs-head__lede { max-width: 600px; opacity: 0.9; }
+
+  .cs-results { padding: 64px 0; }
+
+  .cs-fig { margin: 0 auto; padding-top: 96px; display: flex; flex-direction: column; gap: 24px; }
+  .wf {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 0 3.4%;
+    height: 360px;
+    padding: 48px 48px 0;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-subtle);
+    background-image: linear-gradient(var(--color-border-strong), var(--color-border-strong));
+    background-size: calc(100% - 96px) 2px;
+    background-position: 48px 288px;
+    background-repeat: no-repeat;
+  }
+  .wf__col { display: grid; grid-template-rows: 240px auto; align-items: end; row-gap: 14px; }
+  .wf__bar { background: var(--color-bg-inverse); width: 100%; }
+  .wf__bar[data-red] { background: var(--color-bg-accent); }
+  .wf__label { align-self: start; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .cs-row { display: grid; grid-template-columns: 280px minmax(0, 840px); gap: 80px; padding-top: 96px; }
+  .cs-label { display: flex; flex-direction: column; gap: 8px; border-top: 2px solid var(--color-border-strong); padding-top: 8px; align-self: start; }
+  .cs-body { display: flex; flex-direction: column; gap: 20px; }
+  .cs-items { margin: 0; display: flex; flex-direction: column; gap: 20px; }
+  .cs-item { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 24px; padding-top: 16px; border-top: 1px solid var(--color-border-subtle); }
+  .cs-item dd { margin: 0; }
+  .cs-tools { margin-top: 0; }
+
+  .cs-next { padding-top: 120px; padding-bottom: 120px; }
+  .cs-next > p { border-top: 2px solid var(--color-border-strong); padding-top: 16px; margin-bottom: 16px; }
+  .cs-next__row { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+
+  @media (max-width: 1100px) {
+    .cs-row { grid-template-columns: 200px minmax(0, 1fr); gap: 48px; }
+    .cs-item { grid-template-columns: 200px minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .cs-head { min-height: 560px; }
+    .cs-head__copy { gap: 16px; padding-top: 56px; padding-bottom: 56px; }
+    .cs-head__title { font-size: 48px; }
+    .cs-results { padding: 48px 0; }
+    .cs-fig { padding-top: 56px; }
+    .wf { height: 260px; padding: 24px 16px 0; gap: 0 6px; background-size: calc(100% - 32px) 2px; background-position: 16px 184px; }
+    .wf__col { grid-template-rows: 160px auto; row-gap: 10px; }
+    .wf__label { font-size: 10px; letter-spacing: 0.04em; }
+    .cs-row { grid-template-columns: 1fr; gap: 20px; padding-top: 56px; }
+    .cs-item { grid-template-columns: 1fr; gap: 6px; }
+    .cs-next { padding-top: 72px; padding-bottom: 72px; }
+    .cs-next__row { flex-direction: column; align-items: flex-start; }
+  }
+</style>

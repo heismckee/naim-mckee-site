@@ -1,0 +1,61 @@
+---
+import ScriptEmphasis from './ScriptEmphasis.astro';
+import { links, contact } from '../data/site';
+const social = [
+  { label: 'LinkedIn', href: links.linkedin },
+  { label: 'GitHub', href: links.github },
+  { label: 'YouTube', href: links.youtube },
+  { label: 'Résumé PDF', href: links.resume },
+].filter((s) => s.href);
+---
+<footer class="contact section--ink" id="contact">
+  <div class="wrap">
+    <div class="contact__title">
+      <h2 class="display-xl">Let's talk.</h2>
+      <span class="sq contact__sq" aria-hidden="true"></span>
+    </div>
+    <p class="body-l contact__line">{contact.line}</p>
+    <a class="contact__email h2" href={`mailto:${links.email}`}>{links.email}</a>
+    <ul class="contact__social label-mono">
+      {social.map((s) => <li><a href={s.href!} target={s.href!.startsWith('http') ? '_blank' : undefined} rel="noopener">{s.label}</a></li>)}
+    </ul>
+    <div class="contact__foot">
+      <p class="label-mono contact__copy">{contact.footer}</p>
+      <ScriptEmphasis text={contact.script} swash class="contact__script" />
+    </div>
+  </div>
+</footer>
+
+<style>
+  .contact { padding: 120px 0 48px; }
+  .contact .wrap { display: flex; flex-direction: column; gap: 32px; align-items: flex-start; }
+  .contact__title { display: flex; align-items: flex-end; gap: 24px; }
+  .contact__sq { width: 40px; height: 40px; margin-bottom: 0.12em; }
+  .contact__line { opacity: 0.85; }
+  .contact__email { color: var(--color-text-inverse); text-decoration: underline; text-underline-offset: 0.12em; text-decoration-thickness: 2px; overflow-wrap: anywhere; }
+  .contact__email:hover { color: var(--color-text-accent); }
+  .contact__social { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 0; color: var(--color-text-accent); }
+  .contact__social li + li::before { content: '·'; margin: 0 14px; }
+  .contact__social a { text-decoration: none; }
+  .contact__social a:hover { color: var(--color-text-inverse); }
+  .contact__foot {
+    width: 100%;
+    margin-top: 64px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(242, 237, 227, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+  }
+  .contact__copy { opacity: 0.7; }
+  .contact__foot :global(.contact__script) { font-size: 64px; }
+
+  @media (max-width: 760px) {
+    .contact { padding: 72px 0 40px; }
+    .contact .wrap { gap: 24px; }
+    .contact__sq { display: none; }
+    .contact__foot { flex-direction: column-reverse; align-items: flex-start; margin-top: 16px; border-top: 0; padding-top: 0; }
+    .contact__foot :global(.contact__script) { font-size: 44px; }
+  }
+</style>

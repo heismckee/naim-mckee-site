@@ -1,0 +1,31 @@
+---
+/** Script emphasis with optional swash tail. Once per view. */
+interface Props {
+  text: string;
+  swash?: boolean;
+  rotate?: number;
+  class?: string;
+}
+const { text, swash = false, rotate = -0.7, class: cls = '' } = Astro.props;
+---
+<span class:list={['script-em', cls]} style={`--rot:${rotate}deg`}>
+  <span class="script script-em__text">{text}</span>
+  {swash && (
+    <svg class="script-em__swash" viewBox="0 0 271 18" fill="none" aria-hidden="true">
+      <path d="M1.69373 12.2726C59.2812 17.1817 143.969 11.4544 269.306 1.63623C169.375 13.0908 76.2187 19.6362 1.69373 15.5453V12.2726Z" fill="#D02418" />
+    </svg>
+  )}
+</span>
+
+<style>
+  .script-em {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0 4px;
+    transform: rotate(var(--rot));
+    color: var(--color-text-accent);
+  }
+  .script-em__text { font-size: 1em; white-space: nowrap; }
+  .script-em__swash { width: 100%; height: auto; margin-top: -0.22em; }
+</style>

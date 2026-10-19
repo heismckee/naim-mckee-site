@@ -1,0 +1,24 @@
+---
+/** Content tile: 2px ink rule, red channel label, title, description, link. */
+import Button from './Button.astro';
+interface Props { channel: string; title: string; description: string; cta: string; href: string | null }
+const { channel, title, description, cta, href } = Astro.props;
+---
+<article class="ct">
+  <p class="label-mono accent">{channel}</p>
+  <h3 class="h3">{title}</h3>
+  <p class="body secondary">{description}</p>
+  {href && <div class="ct__cta"><Button href={href} variant="link">{cta}</Button></div>}
+</article>
+
+<style>
+  .ct {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 0 8px;
+    border-top: 2px solid var(--color-border-strong);
+    height: 100%;
+  }
+  .ct__cta { margin-top: auto; padding-top: 4px; }
+</style>

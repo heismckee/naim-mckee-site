@@ -1,0 +1,110 @@
+---
+import { links } from '../data/site';
+const home = Astro.url.pathname === '/' ? '' : '/';
+const items = [
+  { label: 'Work', href: `${home}#work` },
+  { label: 'Builds', href: `${home}#builds` },
+  { label: 'About', href: `${home}#about` },
+];
+---
+<header class="nav">
+  <div class="wrap">
+    <div class="nav__bar">
+      <a class="nav__mark" href="/" aria-label="Na'im McKee, home">Na’im McKee<span class="sq" aria-hidden="true"></span></a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
+        <span class="sr-only">Menu</span>
+        <span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span>
+      </button>
+      <nav id="nav-menu" class="nav__menu" aria-label="Main">
+        {items.map((i) => <a class="nav__link label-mono" href={i.href}>{i.label}</a>)}
+        {links.resume && <a class="nav__cta" href={links.resume} download>Resume</a>}
+      </nav>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.nav__toggle');
+  const menu = document.getElementById('nav-menu');
+  btn?.addEventListener('click', () => {
+    const open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    menu?.classList.toggle('is-open', !open);
+  });
+  menu?.querySelectorAll('a').forEach((a) =>
+    a.addEventListener('click', () => {
+      btn?.setAttribute('aria-expanded', 'false');
+      menu.classList.remove('is-open');
+    }),
+  );
+</script>
+
+<style>
+  .nav { background: var(--color-bg-page); padding-top: 20px; position: relative; z-index: 10; }
+  .nav__bar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 38px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--color-border-strong);
+  }
+  .nav__mark {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 3px;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 1;
+    text-decoration: none;
+    color: var(--color-text-primary);
+    margin-right: auto;
+  }
+  .nav__mark .sq { width: 7px; height: 7px; margin-bottom: 2px; }
+  .nav__menu { display: flex; align-items: center; gap: 24px; }
+  .nav__link { text-decoration: none; }
+  .nav__link:hover { color: var(--color-text-accent); }
+  .nav__cta {
+    background: var(--color-bg-accent);
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 8px 16px;
+  }
+  .nav__toggle { display: none; }
+
+  @media (max-width: 760px) {
+    .nav { padding-top: 0; }
+    .nav__bar { min-height: 54px; padding: 0; border-bottom-width: 2px; }
+    .nav__mark { font-size: 18px; }
+    .nav__toggle {
+      display: grid;
+      gap: 6px;
+      width: 44px;
+      height: 44px;
+      padding: 13px 10px;
+      margin-right: -10px;
+      background: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .nav__toggle span[aria-hidden] { display: block; height: 2px; background: var(--color-text-primary); }
+    .nav__menu {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+      background: var(--color-bg-page);
+      border-bottom: 2px solid var(--color-border-strong);
+      padding: 8px var(--gutter) 24px;
+    }
+    .nav__menu.is-open { display: flex; }
+    .nav__link { padding: 12px 0; width: 100%; }
+    .nav__cta { margin-top: 12px; }
+  }
+</style>

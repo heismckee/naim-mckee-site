@@ -1,0 +1,126 @@
+/* ─────────────────────────────────────────────────────────────
+   Tokens — taken from the Figma comps ("To boldly go" system).
+   Paper, Ink, Signal Red, Brass, River · Archivo, IBM Plex Mono, Damion
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --color-bg-page: #f3eee4;      /* Paper */
+  --color-bg-card: #ffffff;
+  --color-bg-inverse: #121212;   /* Ink */
+  --color-bg-accent: #d02418;    /* Signal Red */
+  --color-text-primary: #121212;
+  --color-text-secondary: #4a4741;
+  --color-text-inverse: #f3eee4;
+  --color-text-accent: #d02418;
+  --color-border-strong: #121212;
+  --color-border-subtle: #8d8a83;
+  --color-accent-river: #1f3a4d; /* River */
+  --color-accent-brass: #c9962b; /* Brass */
+  --color-photo-fallback: #4a4740;
+
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --gutter: 120px;
+  --content: 1200px;
+
+  --font-display: 'Archivo Variable', 'Archivo', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --font-script: 'Damion', 'Brush Script MT', cursive;
+}
+
+@media (max-width: 1100px) { :root { --gutter: 56px; } }
+@media (max-width: 760px)  { :root { --gutter: 24px; } }
+
+/* ── Base ─────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  margin: 0;
+  background: var(--color-bg-page);
+  color: var(--color-text-primary);
+  font-family: var(--font-display);
+  font-size: 17px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+img, svg { display: block; max-width: 100%; }
+h1, h2, h3, p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--color-bg-accent); outline-offset: 3px; }
+
+.wrap { width: 100%; max-width: calc(var(--content) + 2 * var(--gutter)); margin: 0 auto; padding: 0 var(--gutter); }
+.skip { position: absolute; left: -9999px; top: 0; }
+.skip:focus { left: 16px; top: 16px; z-index: 50; background: var(--color-bg-inverse); color: var(--color-text-inverse); padding: 8px 12px; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Type styles (named as in Figma) ──────────────────────── */
+.label-mono {            /* Label/Mono */
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.display-xl {            /* Display/XL */
+  font-weight: 900;
+  font-size: clamp(64px, 9vw, 128px);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.display-l {             /* Display/L */
+  font-weight: 800;
+  font-size: clamp(56px, 6.2vw, 88px);
+  line-height: 0.94;
+  letter-spacing: -0.03em;
+}
+.h1 {                    /* Heading/H1 */
+  font-weight: 800;
+  font-size: clamp(40px, 4.5vw, 64px);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.h2 {                    /* Heading/H2 */
+  font-weight: 700;
+  font-size: clamp(28px, 2.8vw, 40px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.h3 {                    /* Heading/H3 */
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+.body-l { font-size: 20px; line-height: 1.5; }   /* Body/Large */
+.body   { font-size: 17px; line-height: 1.55; }  /* Body/Default */
+.numeral {               /* Data/Numeral */
+  font-weight: 900;
+  font-size: 96px;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.script {                /* Accent/Script */
+  font-family: var(--font-script);
+  font-weight: 400;
+  line-height: 1.1;
+}
+.accent { color: var(--color-text-accent); }
+.secondary { color: var(--color-text-secondary); }
+
+@media (max-width: 760px) {
+  .body-l { font-size: 17px; }
+}
+
+/* ── Sections ─────────────────────────────────────────────── */
+.section { padding: 96px 0; }
+.section--page { background: var(--color-bg-page); }
+.section--card { background: var(--color-bg-card); }
+.section--ink  { background: var(--color-bg-inverse); color: var(--color-text-inverse); }
+.section > .wrap { display: flex; flex-direction: column; gap: 48px; }
+@media (max-width: 760px) { .section { padding: 56px 0; } .section > .wrap { gap: 24px; } }
+
+/* Signal square — the small red block used across the system */
+.sq { display: inline-block; background: var(--color-bg-accent); flex: none; }

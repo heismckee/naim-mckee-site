@@ -1,0 +1,51 @@
+---
+/** Selected-work card: ink visual with the headline number, red eyebrow, title, summary and link. */
+import Button from './Button.astro';
+interface Props {
+  number: string;
+  numberLabel: string;
+  eyebrow: string;
+  title: string;
+  summary: string;
+  href?: string | null;
+}
+const { number, numberLabel, eyebrow, title, summary, href } = Astro.props;
+---
+<article class="wc">
+  <div class="wc__visual" aria-hidden="true">
+    <span class="label-mono wc__vlabel">{numberLabel}</span>
+    <span class="sq wc__sq"></span>
+    <span class="numeral wc__num">{number}</span>
+  </div>
+  <p class="label-mono accent">{eyebrow}</p>
+  <h3 class="h3">{title}</h3>
+  <p class="body secondary">{summary}</p>
+  <div class="wc__cta">
+    {href ? <Button href={href} variant="link">Read the case study</Button> : <span class="label-mono secondary">Case study coming soon</span>}
+  </div>
+</article>
+
+<style>
+  .wc {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border-strong);
+    padding: var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+  }
+  .wc__visual {
+    position: relative;
+    height: 240px;
+    background: var(--color-bg-inverse);
+    color: var(--color-text-inverse);
+    overflow: hidden;
+  }
+  .wc__vlabel { position: absolute; left: 22px; top: 20px; right: 56px; }
+  .wc__sq { position: absolute; right: 18px; top: 20px; width: 24px; height: 24px; }
+  .wc__num { position: absolute; left: 20px; bottom: 20px; white-space: nowrap; }
+  .wc__cta { margin-top: auto; padding-top: 4px; }
+  @media (max-width: 1100px) { .wc__num { font-size: 80px; } }
+  @media (max-width: 760px) { .wc__num { font-size: 96px; } }
+</style>

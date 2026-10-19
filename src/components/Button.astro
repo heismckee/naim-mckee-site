@@ -1,0 +1,55 @@
+---
+/**
+ * Square buttons. Primary = signal red, one per view. Secondary = ink outline.
+ * Link = text with a red arrow. `inverse` flips link text for dark sections.
+ */
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'link';
+  inverse?: boolean;
+  external?: boolean;
+  download?: boolean;
+  class?: string;
+}
+const { href, variant = 'primary', inverse = false, external = /^https?:/.test(href), download = false, class: cls = '' } = Astro.props;
+---
+<a
+  class:list={['btn', `btn--${variant}`, { 'btn--inverse': inverse }, cls]}
+  href={href}
+  {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+  {...(download ? { download: '' } : {})}
+>
+  <span><slot /></span>{variant === 'link' && <span class="btn__arrow" aria-hidden="true">→</span>}
+</a>
+
+<style>
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 1.2;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+  .btn--primary {
+    background: var(--color-bg-accent);
+    color: var(--color-text-inverse);
+    padding: var(--space-md) var(--space-lg);
+  }
+  .btn--primary:hover { background: #a91c12; }
+  .btn--secondary {
+    border: 2px solid var(--color-border-strong);
+    color: var(--color-text-primary);
+    padding: calc(var(--space-md) - 2px) calc(var(--space-lg) - 2px);
+  }
+  .btn--secondary:hover { background: var(--color-bg-inverse); color: var(--color-text-inverse); }
+  .btn--link { color: var(--color-text-primary); }
+  .btn--link.btn--inverse { color: var(--color-text-inverse); }
+  .btn__arrow { color: var(--color-text-accent); transition: transform 120ms ease; }
+  .btn--link:hover span:first-child { text-decoration: underline; text-underline-offset: 4px; }
+  .btn--link:hover .btn__arrow { transform: translateX(3px); }
+</style>

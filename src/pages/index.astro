@@ -1,0 +1,230 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+import ScriptEmphasis from '../components/ScriptEmphasis.astro';
+import SectionHeader from '../components/SectionHeader.astro';
+import Stats from '../components/Stats.astro';
+import WorkCard from '../components/WorkCard.astro';
+import BuildCard from '../components/BuildCard.astro';
+import ContentTile from '../components/ContentTile.astro';
+import { hero, proofPoints, featuredBuild, builds, content, about, links } from '../data/site';
+
+const work = (await getCollection('work')).sort((a, b) => a.data.order - b.data.order);
+const MOBILE_VISIBLE_BUILDS = 2;
+---
+<Base
+  title="Na'im McKee — Marketing leader. Learning. Adapting. Delivering."
+  description="Marketing, growth and analytics leader. Ping Identity to $90M pre-IPO, the growth model Dice planned from, and 43% of new revenue from marketing at InfoTrust."
+>
+  <!-- Hero -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap hero__grid">
+      <div class="hero__copy">
+        <p class="label-mono accent">{hero.eyebrow}</p>
+        <h1 class="display-l hero__title" id="hero-title">
+          {hero.lines.map((l) => <span>{l}</span>)}
+          <span class="script accent hero__script">{hero.scriptLine}</span>
+        </h1>
+        <p class="body-l secondary hero__support">{hero.supporting}</p>
+        <div class="hero__ctas">
+          <Button href="#work">See the work</Button>
+          {links.resume && <Button href={links.resume} variant="secondary" download>Download resume</Button>}
+        </div>
+      </div>
+      <figure class="hero__portrait">
+        <img src={hero.portrait.src} alt={hero.portrait.alt} width={hero.portrait.width} height={hero.portrait.height} fetchpriority="high" />
+        <span class="sq hero__sq" aria-hidden="true"></span>
+        <ScriptEmphasis text={hero.script} class="hero__boldly" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- Proof points -->
+  <section class="section--ink proof" aria-label="Results">
+    <div class="wrap"><Stats items={proofPoints} /></div>
+  </section>
+
+  <!-- 01 Selected work -->
+  <section class="section section--page" aria-labelledby="work">
+    <div class="wrap">
+      <SectionHeader index="01" title="Selected work" subtitle="Three problems, what I did and what changed." id="work" />
+      <div class="grid3">
+        {work.map((w) => (
+          <WorkCard
+            number={w.data.cardNumber}
+            numberLabel={w.data.cardNumberLabel}
+            eyebrow={`${w.data.company} · ${w.data.years}`}
+            title={w.data.title}
+            summary={w.data.cardSummary}
+            href={w.data.draft ? null : `/work/${w.id}/`}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Builds -->
+  <section class="section section--card" aria-labelledby="builds">
+    <div class="wrap">
+      <SectionHeader index="02" title="Things I've built" subtitle="Models, agents, videos and games I build to test ideas in public." id="builds" />
+      <article class="featured">
+        <div class="featured__media">
+          <svg viewBox="0 0 660 371" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <rect width="660" height="371" fill="#1F3A4D" />
+            <path d="M0 371L150 190L240 260L380 120L520 250L600 200L660 240V371H0Z" fill="#F2EDE3" fill-opacity="0.9" stroke="#000" />
+          </svg>
+          {featuredBuild.video && (
+            <a class="featured__play" href={featuredBuild.video} target="_blank" rel="noopener" aria-label="Play the video">
+              <svg viewBox="0 0 88 88" aria-hidden="true"><circle cx="44" cy="44" r="44" fill="#D02418" /><path d="M35 29L61 44L35 59V29Z" fill="#F3EEE4" /></svg>
+            </a>
+          )}
+        </div>
+        <div class="featured__copy">
+          <p class="label-mono accent">{featuredBuild.eyebrow}</p>
+          <h3 class="h2">{featuredBuild.title}</h3>
+          <p class="body-l featured__desc">{featuredBuild.description}</p>
+          {(featuredBuild.video || featuredBuild.sources) && (
+            <div class="featured__ctas">
+              {featuredBuild.video && <Button href={featuredBuild.video}>Watch the video</Button>}
+              {featuredBuild.sources && <Button href={featuredBuild.sources} variant="link" inverse>Model and sources</Button>}
+            </div>
+          )}
+        </div>
+      </article>
+      <div class="grid3 builds" id="build-grid">
+        {builds.map((b, i) => <BuildCard build={b} class={i >= MOBILE_VISIBLE_BUILDS ? 'is-extra' : ''} />)}
+      </div>
+      <button class="more-builds" type="button" aria-controls="build-grid" aria-expanded="false">See all six builds</button>
+    </div>
+  </section>
+
+  <!-- 03 Content -->
+  <section class="section section--page" aria-labelledby="content">
+    <div class="wrap">
+      <SectionHeader index="03" title="Videos, writing and talks" subtitle="Where I explain the work, on camera and on stage." id="content" />
+      <div class="grid3 tiles">
+        {content.map((c) => <ContentTile {...c} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 About -->
+  <section class="section section--card" aria-labelledby="about">
+    <div class="wrap">
+      <SectionHeader index="04" title="About" id="about" />
+      <div class="about">
+        <figure class="about__portrait">
+          <img src={about.portrait.src} alt={about.portrait.alt} width={about.portrait.width} height={about.portrait.height} loading="lazy" />
+          <span class="sq about__sq" aria-hidden="true"></span>
+        </figure>
+        <div class="about__bio">
+          <p class="h2">{about.headline}</p>
+          {about.paragraphs.map((p) => <p class="body-l">{p}</p>)}
+          <hr />
+          <p class="label-mono secondary">{about.trail}</p>
+          {links.resume && <Button href={links.resume} variant="secondary" download>Download résumé (PDF)</Button>}
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.more-builds');
+  const grid = document.getElementById('build-grid');
+  btn?.addEventListener('click', () => {
+    grid?.classList.add('show-all');
+    btn.setAttribute('aria-expanded', 'true');
+    btn.hidden = true;
+  });
+</script>
+
+<style>
+  /* Hero */
+  .hero { padding: 88px 0 104px; }
+  .hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) 470px; gap: 64px; align-items: center; }
+  .hero__copy { display: flex; flex-direction: column; gap: 28px; align-items: flex-start; }
+  .hero__title span { display: block; }
+  .hero__script { font-family: var(--font-script); font-weight: 400; letter-spacing: 0; line-height: 0.94; padding-top: 0.06em; }
+  .hero__support { max-width: 666px; }
+  .hero__ctas { display: flex; flex-wrap: wrap; gap: 16px; }
+  .hero__portrait { position: relative; margin: 0; width: 470px; height: 600px; }
+  .hero__portrait img { position: absolute; left: 50px; top: 0; width: 422px; height: 540px; object-fit: cover; }
+  .hero__sq { position: absolute; left: 0; top: 470px; width: 88px; height: 88px; }
+  .hero__portrait :global(.hero__boldly) { position: absolute; left: 87px; top: 502px; font-size: 64px; }
+
+  .proof { padding: 64px 0 72px; }
+
+  .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+  .builds { row-gap: 48px; }
+  .tiles { row-gap: 24px; }
+
+  /* Featured build */
+  .featured {
+    display: grid;
+    grid-template-columns: minmax(0, 660fr) minmax(0, 492fr);
+    gap: 48px;
+    align-items: center;
+    background: var(--color-bg-inverse);
+    color: var(--color-text-inverse);
+  }
+  .featured__media { position: relative; aspect-ratio: 660 / 371; background: var(--color-accent-river); }
+  .featured__media svg { width: 100%; height: 100%; }
+  .featured__play { position: absolute; left: 50%; top: 50%; width: 88px; height: 88px; transform: translate(-50%, -50%); }
+  .featured__copy { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; padding: 32px 48px 32px 0; }
+  .featured__desc { opacity: 0.85; }
+  .featured__ctas { display: flex; flex-wrap: wrap; align-items: center; gap: 24px; margin-top: 8px; }
+
+  .more-builds { display: none; }
+
+  /* About */
+  .about { display: grid; grid-template-columns: 420px minmax(0, 1fr); gap: 80px; align-items: start; }
+  .about__portrait { position: relative; margin: 0; aspect-ratio: 1; background: var(--color-photo-fallback); }
+  .about__portrait img { width: 100%; height: 100%; object-fit: cover; }
+  .about__sq { position: absolute; right: 0; bottom: 0; width: 40px; height: 40px; }
+  .about__bio { display: flex; flex-direction: column; gap: 24px; align-items: flex-start; max-width: 700px; }
+  .about__bio hr { width: 100%; height: 2px; border: 0; margin: 0; background: var(--color-border-strong); }
+
+  @media (max-width: 1100px) {
+    .hero__grid { grid-template-columns: minmax(0, 1fr) 360px; gap: 40px; }
+    .hero__portrait { width: 360px; height: 470px; }
+    .hero__portrait img { left: 38px; width: 322px; height: 412px; }
+    .hero__sq { top: 360px; width: 68px; height: 68px; }
+    .hero__portrait :global(.hero__boldly) { left: 64px; top: 384px; font-size: 48px; }
+    .grid3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .featured { grid-template-columns: 1fr; gap: 0; }
+    .featured__copy { padding: 32px; }
+    .about { grid-template-columns: 300px minmax(0, 1fr); gap: 48px; }
+  }
+
+  @media (max-width: 760px) {
+    .hero { padding: 40px 0 56px; }
+    .hero__grid { grid-template-columns: 1fr; gap: 24px; }
+    .hero__copy { gap: 24px; }
+    .hero__title { font-size: 64px; }
+    .hero__portrait { width: 100%; max-width: 342px; height: auto; aspect-ratio: 342 / 400; }
+    .hero__portrait img { left: auto; right: 0; width: 90.6%; height: 95%; }
+    .hero__sq { top: 80%; width: 56px; height: 56px; }
+    .hero__portrait :global(.hero__boldly) { left: 46.5%; top: 81.3%; font-size: 30.7px; }
+
+    .proof { padding: 56px 0; }
+    .grid3 { grid-template-columns: 1fr; }
+    .builds { row-gap: 24px; }
+    .builds :global(.is-extra) { display: none; }
+    .builds.show-all :global(.is-extra) { display: flex; }
+    .more-builds {
+      display: inline-flex;
+      align-self: flex-start;
+      font: 700 16px/1.2 var(--font-display);
+      color: var(--color-text-primary);
+      background: none;
+      border: 2px solid var(--color-border-strong);
+      padding: 14px 22px;
+      cursor: pointer;
+    }
+    .featured__copy { padding: 12px 20px 24px; gap: 8px; }
+    .featured__ctas { margin-top: 8px; }
+    .about { grid-template-columns: 1fr; gap: 24px; }
+  }
+</style>

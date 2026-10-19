@@ -1,0 +1,93 @@
+---
+/** Thumbnails for the build cards — shapes and coordinates exported from the Figma comps (334 × 200). */
+interface Props { kind: 'ppo' | 'mmm' | 'geo' | 'agent' | 'boxbox' | 'codeblack' }
+const { kind } = Astro.props;
+const mmmBars = [
+  { x: 24, y: 127.2, h: 40.8 },
+  { x: 64.86, y: 93.2, h: 74.8 },
+  { x: 105.71, y: 72.8, h: 95.2 },
+  { x: 146.57, y: 61.92, h: 106.08, red: true },
+  { x: 187.43, y: 55.12, h: 112.88 },
+  { x: 228.29, y: 51.04, h: 116.96 },
+  { x: 269.14, y: 48.32, h: 119.68 },
+];
+const agentSteps = [
+  { x: 24, label: 'Propose' },
+  { x: 98.5, label: 'Check' },
+  { x: 173, label: 'Ask', red: true },
+  { x: 247.5, label: 'Apply' },
+];
+---
+{kind === 'boxbox' ? (
+  <div class="thumb thumb--ink" aria-hidden="true">
+    <p class="thumb__box">BOX<br />BOX<br />BOX!</p>
+    <span class="sq thumb__sq"></span>
+  </div>
+) : kind === 'codeblack' ? (
+  <div class="thumb thumb--red" aria-hidden="true">
+    <p class="thumb__cb">CodeBlack</p>
+    <span class="thumb__sq thumb__sq--ink"></span>
+  </div>
+) : (
+  <svg class="thumb thumb--paper" viewBox="0 0 334 200" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+    <rect x="24" y="168" width="286" height="1" fill="#121212" />
+    {kind === 'ppo' && (
+      <>
+        <path d="M24 110.9H310" stroke="#4A4741" stroke-width="3" stroke-dasharray="6 6" fill="none" />
+        <path d="M24 140.8L55.8 134L87.6 138.1L119.3 113.6L151.1 100L182.9 83.7L214.7 78.2L246.4 70.1L278.2 67.4L310 66" stroke="#D02418" stroke-width="3" fill="none" />
+      </>
+    )}
+    {kind === 'geo' && (
+      <>
+        <path d="M24 113.6L55.8 109.5L87.6 110.9H119.3L151.1 108.2L182.9 106.8L214.7 108.2L246.4 105.4L278.2 106.8L310 105.4" stroke="#4A4741" stroke-width="3" stroke-dasharray="6 6" fill="none" />
+        <path d="M24 113.6L55.8 110.9L87.6 112.2L119.3 109.5L151.1 108.2L182.9 83.7L214.7 78.2L246.4 81L278.2 75.5L310 76.9" stroke="#D02418" stroke-width="3" fill="none" />
+      </>
+    )}
+    {kind === 'mmm' && mmmBars.map((b) => (
+      <rect x={b.x} y={b.y} width="30.86" height={b.h} fill={b.red ? '#D02418' : '#1F3A4D'} />
+    ))}
+    {kind === 'agent' && agentSteps.map((s) => (
+      <g>
+        <rect x={s.x} y="66" width="62.5" height="44" fill={s.red ? '#D02418' : '#121212'} />
+        <text x={s.x + 31.25} y="92" text-anchor="middle" fill="#F3EEE4" font-family="IBM Plex Mono, monospace" font-weight="500" font-size="10" letter-spacing="0.8">{s.label.toUpperCase()}</text>
+      </g>
+    ))}
+  </svg>
+)}
+
+<style>
+  .thumb {
+    display: block;
+    width: 100%;
+    aspect-ratio: 334 / 200;
+    border: 1px solid var(--color-border-subtle);
+    position: relative;
+    overflow: hidden;
+  }
+  .thumb--paper { background: var(--color-bg-page); }
+  .thumb--ink { background: var(--color-bg-inverse); border: 0.5px solid var(--color-border-strong); }
+  .thumb--red { background: var(--color-bg-accent); border: 0.5px solid var(--color-border-strong); }
+  .thumb--ink, .thumb--red { container-type: inline-size; }
+  .thumb__box {
+    position: absolute;
+    left: 7%;
+    top: 9%;
+    color: var(--color-text-inverse);
+    font-weight: 800;
+    font-size: 16cqw;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .thumb__cb {
+    position: absolute;
+    left: 7%;
+    bottom: 12%;
+    color: var(--color-text-inverse);
+    font-weight: 700;
+    font-size: 12cqw;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .thumb__sq { position: absolute; right: 7%; top: 12%; width: 24px; height: 24px; }
+  .thumb__sq--ink { background: var(--color-bg-inverse); }
+</style>
