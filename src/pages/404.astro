@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import Button from '../components/Button.astro';
+---
+<Base title="Page not found — Na'im McKee" description="That page doesn't exist.">
+  <section class="section section--page">
+    <div class="wrap nf">
+      <p class="label-mono accent">404</p>
+      <h1 class="display-l">Wrong turn.</h1>
+      <p class="body-l secondary">That page doesn't exist, or it moved.</p>
+      <Button href="/">Back to the home page</Button>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { gap: 24px; align-items: flex-start; min-height: 50vh; }
+</style>

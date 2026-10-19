@@ -26,18 +26,22 @@ Requires Node 22.22 or newer.
 - **Résumé:** drop `resume.pdf` into `public/`, then set `resume: '/resume.pdf'` in `site.ts`. The Resume buttons appear automatically.
 - **Case studies:** `infotrust.md` and `aboveboard.md` are drafts (`draft: true`). Fill in the `TODO` fields and set `draft: false` to publish. Their home-page cards link up automatically.
 
-## Deploy on Cloudflare Pages
+## Deploy on Cloudflare (Workers)
 
-1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Pages** → **Connect to Git** → pick `heismckee/naim-mckee-site`.
-2. Framework preset: **Astro**. Build command `npm run build`, output directory `dist`.
-3. Add an environment variable `NODE_VERSION` = `22` so the build uses a current Node.
-4. Save and deploy. Every push to `main` redeploys.
+The repo already includes `wrangler.jsonc`, which tells Cloudflare to serve the built `dist/` folder.
+
+1. Cloudflare dashboard → **Compute** → **Workers & Pages** → **Create application**.
+2. Under **Import a repository**, connect GitHub and pick `heismckee/naim-mckee-site`.
+3. Build command: `npm run build` · Deploy command: `npx wrangler deploy`.
+4. Under the build variables, add `NODE_VERSION` = `22`.
+5. **Save and Deploy.** The site goes live at `naim-mckee-site.<your-subdomain>.workers.dev`, and every push to `main` redeploys.
 
 ## Point the Wix domain at it
 
-The domain can stay registered at Wix. Two options:
+The domain can stay registered at Wix. Move its DNS to Cloudflare (free):
 
-- **Simplest (keep Wix DNS):** in Cloudflare Pages → your project → **Custom domains**, add `www.yourdomain.com`. Cloudflare shows a CNAME target (`naim-mckee-site.pages.dev`). In Wix → Domains → Manage DNS records, add a **CNAME** for `www` with that value. In Wix, set the root domain to forward to `www`.
-- **Full control (move DNS to Cloudflare):** add the domain to Cloudflare (free plan), then in Wix → Domains → Advanced → **Change name servers** to the two Cloudflare nameservers. After it activates, add the root and `www` as custom domains in Pages. This lets the bare domain work directly.
+1. In Cloudflare's **Add a domain** box, enter the domain and choose the Free plan. Cloudflare gives you two nameservers.
+2. In Wix → Domains → your domain → **Advanced** → **Change name servers**, replace Wix's nameservers with Cloudflare's two.
+3. Once Cloudflare shows the domain as Active (minutes to a few hours), open the Worker → **Settings** → **Domains & Routes** → **Add** → **Custom domain**, and add the root domain and `www`.
 
 After the domain is live, change `site` in `astro.config.mjs` to the real URL so the sitemap and share links use it.
